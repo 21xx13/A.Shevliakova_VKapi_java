@@ -32,19 +32,16 @@ public class Main {
         }
     }
 
-    private static Map<String, Double> fillDictionary(JSONArray friends, int count) {
+    private static Map<String, Double> fillDictionary(JSONArray friends, int countFriends) {
         Map<String, Double> result = new TreeMap<>();
         for (int i = 0; i < friends.length(); i++) {
             try { //обход списка друзей, получение названия города, запись в словарь
                 String city = friends.getJSONObject(i).getJSONObject("city").get("title").toString();
-                if (!result.containsKey(city))
-                    result.put(city, 1d);
-                else
-                    result.put(city, result.get(city) + 1);
+                result.compute(city, (name, count) -> count == null ? 1 : count + 1);
             } catch (Exception ignored) {
             }
         } //перевод в процентное соотношение
-        result.replaceAll((k, v) -> (result.get(k) / count * 100));
+        result.replaceAll((k, v) -> (result.get(k) / countFriends * 100));
         return result;
     }
 
